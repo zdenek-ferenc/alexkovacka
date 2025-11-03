@@ -1,19 +1,38 @@
-
+// src/app/projects/[slug]/page.tsx
+// TOTO JE TEĎ ČISTÝ SERVER COMPONENT
 
 import { supabase } from "@/lib/supabaseClient";
 import Link from 'next/link';
-import Image from 'next/image';
+
+// ZMĚNA: Odebrali jsme Image, useState, Lightbox
+// ZMĚNA: Importujeme naši novou klientskou komponentu
+import Gallery from './Gallery';
+
+// Typy můžeme nechat zde, aby je page mohla použít
+type Photo = {
+  id: number;
+  image_url: string;
+};
+
+type Project = {
+  id: number;
+  name: string;
+  main_image_url: string;
+};
 
 type PageProps = { params: { slug: string } };
 
 export default async function ProjectPage({ params }: PageProps) {
-  const { slug } = params;
+  
+  // Získání `slug` je zde v pořádku
+  const { slug } = params; 
 
+  // Načítání dat zůstává stejné
   const { data: project } = await supabase
     .from('projects')
     .select('id, name, main_image_url')
     .eq('slug', slug)
-    .single();
+    .single() as { data: Project | null };
 
   if (!project) {
     return (
@@ -29,55 +48,11 @@ export default async function ProjectPage({ params }: PageProps) {
   const { data: galleryPhotos } = await supabase
     .from('photos')
     .select('id, image_url')
-    .eq('project_id', project.id);
+    .eq('project_id', project.id) as { data: Photo[] | null };
 
-  return (
-    <div className="bg-white">
-      {/* HLAVNÍ FOTKA */}
-      {project.main_image_url && (
-        <div className="relative w-full h-screen">
-          <Image
-            src={project.main_image_url}
-            alt={`Hlavní fotka pro projekt ${project.name}`}
-            fill={true}
-            style={{ objectFit: 'cover' }}
-            priority
-          />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <h1 className="text-5xl font-bold text-white text-center tracking-wider">{project.name}</h1>
-          </div>
-        </div>
-      )}
-
-      {/* GALERIE */}
-      {galleryPhotos && galleryPhotos.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-3xl font-bold text-center text-black mb-12">Galerie</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {galleryPhotos.map((photo) => (
-              photo.image_url && (
-                <div key={photo.id} className="break-inside-avoid">
-                  <Image
-                    src={photo.image_url}
-                    alt="Fotka z galerie"
-                    width={700}  
-                    height={700} 
-                    className="w-full h-auto object-cover rounded-lg"
-                    
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-                  />
-                </div>
-              )
-            ))}
-          </div>
-        </div>
-      )}
-      
-      <div className="text-center py-12">
-          <Link href="/" className="text-black font-bold hover:underline">
-              ← Zpět na všechny projekty
-          </Link>
-      </div>
-    </div>
-  );
+  // ZMĚNA: Místo vší té logiky jen předáme data komponentě <Gallery />
+  return <Gallery project={project} galleryPhotos={galleryPhotos || []} />;
 }
+
+// ZMĚNA: Celá funkce `ProjectGallery` byla odstraněna 
+// a přesunuta do souboru `Gallery.tsx`

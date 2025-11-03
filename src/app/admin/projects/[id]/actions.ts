@@ -102,3 +102,33 @@ export async function deleteGalleryImage(projectId: number, imageUrl: string) {
   revalidatePath(`/admin/projects/${projectId}`);
   return { success: "Fotka byla smazána." };
 }
+
+
+export async function saveGalleryImageUrls(projectId: string, paths: string[]) {
+  const supabaseAdmin = createAdminClient();
+
+  const photoObjects = paths.map(path => {
+    const { data: { publicUrl } } = supabaseAdmin.storage
+      .from('photos')
+      .getPublicUrl(path);
+    
+    return {
+      project_id: projectId,
+      image_url: publicUrl,
+    };
+  });
+
+  const { error } = await supabaseAdmin
+    .from('photos')
+    .insert(photoObjects);
+
+  if (error) {
+    return { error: `Chyba při hromadném ukládání do databáze: ${error.message}` };
+  }
+
+  revalidatePath(`/admin/projects/${projectId}`);
+  revalidatePath(`/projects/${projectId}`); 
+  revalidatePath('/'); 
+  
+  return { success: "Všechny fotky úspěšně uloženy!" };
+}
