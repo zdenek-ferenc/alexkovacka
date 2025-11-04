@@ -1,0 +1,19 @@
+{
+  "homepage": {
+    "projects": "projekty",
+    "contact": "kontakt",
+    "instagram": "instagram",
+    "about_title": "o mně",
+    "about_text": "Jsem multižánrový fotograf, což znamená, že miluji kreativní výzvy a fotím od všeho trochu. Ať už jde o portréty, atmosférické reportáže z akcí nebo práci pro značky, do každého projektu vnáším svěží a moderní pohled."
+  },
+  "project_page": {
+    "back_to_projects": "← Zpět na všechny projekty",
+    "gallery": "Galerie",
+    "project_not_found": "Projekt nenalezen."
+  },
+  "gallery_page": {
+    "select_photos": "Pro výběr fotek klikněte na ikonu srdce.",
+    "gallery_not_found": "Galerie nenalezena.",
+    "invalid_link": "Odkaz je pravděpodobně neplatný."
+  }
+}

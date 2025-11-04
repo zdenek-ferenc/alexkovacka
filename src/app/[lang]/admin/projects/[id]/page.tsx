@@ -1,26 +1,30 @@
-// app/admin/projects/[id]/page.tsx
 import Sidebar from "@/components/admin/Sidebar";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import ImageUploadForm from "@/components/admin/ImageUploadForm";
-import { deleteGalleryImage } from "./actions"; // Předpokládám, že tato server action existuje
+import { deleteGalleryImage } from "./actions";
+import EditableProjectName from "@/components/admin/EditableProjectName";
+import type { Project } from "../../../admin/projects/actions";
+import TitleStyleSelector from "@/components/admin/TitleStyleSelector";
 
-// Typy zůstávají stejné
 type PageProps = { params: { id: string } };
-
-type Photo = {
-  id: number;
-  image_url: string;
-};
+type Photo = { id: number; image_url: string; };
+type TitleStyle = 'white_text' | 'white_on_black' | 'black_text' | 'black_on_white';
 
 export default async function ProjectDetailPage({ params }: PageProps) {
-  // Přímý přístup k params.id
   const id = params.id;
 
-  // Dotazy na databázi - OK
-  const { data: project } = await supabase.from("projects").select("*").eq("id", id).single();
-  const { data: galleryPhotos } = await supabase.from("photos").select("id, image_url").eq("project_id", id);
+  const { data: project } = await supabase
+    .from("projects")
+    .select("*, main_image_url, title_style")
+    .eq("id", id)
+    .single();
+    
+  const { data: galleryPhotos } = await supabase
+    .from("photos")
+    .select("id, image_url")
+    .eq("project_id", id);
 
   if (!project) return <div>Projekt nenalezen.</div>;
 
@@ -32,34 +36,34 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <Link href="/admin/projects" className="mr-4 p-2 rounded-full hover:bg-gray-100">
             <ArrowLeft size={20} />
           </Link>
-          <h1 className="text-xl font-semibold">
-            Správa fotek pro: <span className="font-bold">{project.name}</span>
-          </h1>
+          <EditableProjectName project={project as Project} />
         </header>
-
         <div className="p-8 space-y-8">
-          {/* SEKCE 1: HLAVNÍ FOTKA */}
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-lg font-bold mb-6">Styl titulku na hlavní fotce</h2>
+            <TitleStyleSelector 
+              projectId={project.id}
+              projectName={project.name}
+              mainImageUrl={project.main_image_url}
+              currentStyle={(project.title_style || 'white_text') as TitleStyle}
+            />
+          </div>
           <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-bold mb-4">Hlavní fotka</h2>
             {project.main_image_url && (
               <div className="mb-4">
-                {/* Použití next/image pro optimalizaci, pokud je to možné */}
-                <img src={project.main_image_url} alt="Hlavní fotka" className="h-40 rounded-md object-cover" />
+                <img src={project.main_image_url} alt="Hlavní fotka" className="h-40 object-cover" />
               </div>
             )}
-            {/* Předpokládáme, že ImageUploadForm je klientská komponenta */}
             <ImageUploadForm projectId={project.id} isMain={true} />
           </div>
-
-          {/* SEKCE 2: GALERIE */}
           <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-bold mb-4">Galerie projektu</h2>
             {galleryPhotos && galleryPhotos.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
                 {(galleryPhotos as Photo[]).map((photo) => (
                   <div key={photo.id} className="relative group">
-                    {/* Použití next/image pro optimalizaci */}
-                    <img src={photo.image_url} alt={`Galerie fotka`} className="w-full h-32 object-cover rounded-md" />
+                    <img src={photo.image_url} alt={`Galerie fotka`} className="w-full h-32 object-cover" />
                     <form action={async () => {
                       'use server';
                       if (project.id && photo.image_url) {

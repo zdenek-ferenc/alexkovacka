@@ -1,9 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation'; 
 import { useActionState, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import { addProject } from '../../../src/app/[lang]/admin/projects/actions';
+import { addClientGallery } from '../../../src/app/[lang]/admin/clients/actions';
+import { useRouter } from 'next/navigation';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -11,22 +11,21 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="px-4 py-2 font-bold text-white bg-black rounded-md cursor-pointer hover:bg-gray-500 disabled:bg-gray-400"
+      className="px-4 py-2 font-bold text-white cursor-pointer bg-black rounded-md hover:bg-gray-800 disabled:bg-gray-400"
     >
-      {pending ? 'Přidávám...' : 'Přidat'}
+      {pending ? 'Vytvářím...' : 'Vytvořit'}
     </button>
   );
 }
 
-export default function AddProjectForm() {
+export default function AddClientGalleryForm() {
   const router = useRouter();
   const initialState = { error: null, success: false };
-  
-  const [state, formAction] = useActionState(addProject, initialState);
+  const [state, formAction] = useActionState(addClientGallery, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (state.success) {
+    if (state?.success) {
       formRef.current?.reset();
       router.refresh(); 
     }
@@ -38,7 +37,7 @@ export default function AddProjectForm() {
         <input
           type="text"
           name="name"
-          placeholder="Název projektu (např. Svatba 2025)"
+          placeholder="Název galerie (např. Svatba Novákovi)"
           className="flex-grow px-3 py-2 border rounded-md"
           required
         />

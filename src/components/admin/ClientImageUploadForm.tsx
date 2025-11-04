@@ -2,43 +2,38 @@
 
 import { useState, useRef } from 'react';
 import { 
-  createUploadUrl, 
-  saveImageUrl, 
-  saveGalleryImageUrls 
-} from '../../../src/app/[lang]/admin/projects/[id]/actions';
-
+  createClientUploadUrl,
+  saveClientImageUrls 
+} from '../../../src/app/[lang]/admin/clients/actions';
 import imageCompression from 'browser-image-compression';
 
 type Props = {
-  projectId: number;
-  isMultiple?: boolean;
-  isMain?: boolean;
+  galleryId: number;
 };
 
+// Vrací objekt s komprimovaným souborem A původním názvem
 async function compressImage(file: File) {
   const options = {
-    maxSizeMB: 2,           
-    maxWidthOrHeight: 2560, 
-    useWebWorker: true,     
-    fileType: 'image/webp', 
-    quality: 0.8,           
+    maxSizeMB: 2,
+    maxWidthOrHeight: 2560,
+    useWebWorker: true,
+    fileType: 'image/webp',
+    quality: 0.8,
   };
   try {
-    
     const compressedBlob = await imageCompression(file, options);
-    
-    return new File([compressedBlob], `${file.name.split('.')[0]}.webp`, {
+    const compressedFile = new File([compressedBlob], `${file.name.split('.')[0]}.webp`, {
       type: 'image/webp',
       lastModified: Date.now(),
     });
+    return { compressedFile, originalName: file.name };
   } catch (error) {
     console.error(`Komprese souboru ${file.name} selhala:`, error);
-    return file; 
+    return { compressedFile: file, originalName: file.name };
   }
 }
 
-export default function ImageUploadForm({ projectId, isMultiple = false, isMain = false }: Props) {
-  
+export default function ClientImageUploadForm({ galleryId }: Props) {
   const [status, setStatus] = useState<{ 
     type: 'idle' | 'compressing' | 'preparing' | 'uploading' | 'saving' | 'success' | 'error', 
     message: string 
@@ -61,18 +56,17 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
     
     setTotalFiles(fileList.length);
     setUploadProgress(0);
+    
     setStatus({ type: 'compressing', message: 'Komprimuji fotky...' });
-    const compressedFileList = await Promise.all(
+    const compressedData = await Promise.all(
       fileList.map(file => compressImage(file))
     );
 
     setStatus({ type: 'preparing', message: 'Připravuji nahrávání...' });
 
     try {
-      
       const urlResults = await Promise.all(
-        
-        compressedFileList.map(file => createUploadUrl(String(projectId), file.name, isMain))
+        compressedData.map(data => createClientUploadUrl(String(galleryId), data.compressedFile.name))
       );
 
       const failures = urlResults.filter(r => r.failure);
@@ -82,23 +76,24 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
 
       const uploadData = urlResults.map((r, i) => {
         if (!r.success) {
-          throw new Error(`Chybný výsledek pro soubor ${compressedFileList[i].name}`);
+          throw new Error(`Chybný výsledek pro soubor ${compressedData[i].originalName}`);
         }
         return {
-          file: compressedFileList[i], 
+          file: compressedData[i].compressedFile,
           path: r.success.path,
           signedUrl: r.success.signedUrl,
+          originalName: compressedData[i].originalName,
         };
       });
       
-      setStatus({ type: 'uploading', message: `Nahrávám ${compressedFileList.length} souborů...` });
-      
+      setStatus({ type: 'uploading', message: `Nahrávám ${uploadData.length} souborů...` });
+
       await Promise.all(
         uploadData.map(data => 
           fetch(data.signedUrl, {
             method: 'PUT',
             body: data.file,
-            headers: { 'Content-Type': data.file.type }, 
+            headers: { 'Content-Type': data.file.type },
           }).then(res => {
             if (!res.ok) {
               throw new Error(`Nahrání souboru ${data.file.name} na Supabase selhalo.`);
@@ -109,16 +104,15 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
       );
       
       setStatus({ type: 'saving', message: 'Ukládám fotky do databáze...' });
+
+      // Připravíme data pro uložení (včetně originalName)
+      const photosToSave = uploadData.map(d => ({
+        path: d.path,
+        originalName: d.originalName
+      }));
       
-      const paths = uploadData.map(d => d.path);
-      
-      if (isMain) {
-         const saveResult = await saveImageUrl(String(projectId), paths[0], true);
-         if (saveResult.error) throw new Error(saveResult.error);
-      } else {
-         const saveBatchResult = await saveGalleryImageUrls(String(projectId), paths);
-         if (saveBatchResult.error) throw new Error(saveBatchResult.error);
-      }
+      const saveBatchResult = await saveClientImageUrls(String(galleryId), photosToSave);
+      if (saveBatchResult.error) throw new Error(saveBatchResult.error);
 
       setStatus({ type: 'success', message: 'Všechny fotky úspěšně nahrány!' });
       setTotalFiles(0);
@@ -138,7 +132,6 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
   };
   
   const progressPercentage = totalFiles > 0 ? (uploadProgress / totalFiles) * 100 : 0;
-  
   const isUploading = status.type === 'compressing' || status.type === 'preparing' || status.type === 'uploading' || status.type === 'saving';
 
   return (
@@ -146,9 +139,9 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
       <input
         ref={fileInputRef}
         type="file"
-        name={isMultiple ? "images" : "image"}
+        name="images"
         accept="image/*"
-        multiple={isMultiple}
+        multiple={true}
         disabled={isUploading} 
         className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-black hover:file:bg-gray-200 disabled:opacity-50"
         required
@@ -158,12 +151,13 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
         disabled={isUploading} 
         className="px-4 py-2 text-sm font-bold text-white bg-black rounded-md disabled:bg-gray-400"
       >
-        {isUploading ? 'Nahrávám...' : (isMultiple ? 'Nahrát fotky' : 'Nahrát fotku')}
+        {isUploading ? 'Nahrávám...' : 'Nahrát fotky'}
       </button>
 
       {isUploading && (
         <div className="space-y-2 pt-2">
           <p className="text-sm text-gray-600 animate-pulse">{status.message}</p>
+          
           {status.type === 'uploading' && totalFiles > 0 && (
             <div>
               <span className="text-sm font-medium text-gray-700">
@@ -179,6 +173,7 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
           )}
         </div>
       )}
+
       {status.type === 'success' && <p className="text-sm text-green-600">{status.message}</p>}
       {status.type === 'error' && <p className="text-sm text-red-600">{status.message}</p>}
     </form>

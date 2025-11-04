@@ -1,9 +1,8 @@
-
 'use client';
 
 import Link from 'next/link';
-import { LayoutDashboard, FolderKanban, LogOut } from 'lucide-react';
-import { logoutAction } from '@/app/admin/actions';
+import { LayoutDashboard, FolderKanban, LogOut, Users } from 'lucide-react'; 
+import { logoutAction } from '../../../src/app/[lang]/admin/actions';
 
 import { usePathname } from 'next/navigation';
 
@@ -13,11 +12,9 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 flex-shrink-0 bg-gray-800 text-white flex flex-col">
-      <div className="h-16 flex items-center justify-center text-xl font-bold border-b border-gray-700">
-        Admin Panel
+      <div className="h-16 flex items-center pl-6 text-xl font-bold border-b border-gray-700">Alex Panel
       </div>
       <nav className="flex-grow p-4 space-y-2">
-        {/* ZMĚNA ZDE: Dynamicky nastavujeme třídu podle toho, jestli se URL shoduje */}
         <Link 
           href="/admin" 
           className={`flex items-center p-2 rounded-md ${
@@ -30,11 +27,20 @@ export default function Sidebar() {
         <Link 
           href="/admin/projects" 
           className={`flex items-center p-2 rounded-md ${
-            pathname === '/admin/projects' ? 'bg-gray-700' : 'hover:bg-gray-700'
+            pathname.startsWith('/admin/projects') ? 'bg-gray-700' : 'hover:bg-gray-700'
           }`}
         >
           <FolderKanban className="mr-3" />
           Projekty
+        </Link>
+        <Link 
+          href="/admin/clients" 
+          className={`flex items-center p-2 rounded-md ${
+            pathname.startsWith('/admin/clients') ? 'bg-gray-700' : 'hover:bg-gray-700'
+          }`}
+        >
+          <Users className="mr-3" />
+          Klientské galerie
         </Link>
       </nav>
       <div className="p-4 border-t border-gray-700">

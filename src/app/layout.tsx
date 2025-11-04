@@ -1,8 +1,6 @@
-
 import type { Metadata } from "next";
 import { Space_Mono } from "next/font/google"; 
 import "./globals.css";
-
 
 const spaceMono = Space_Mono({
   subsets: ["latin"],
@@ -16,12 +14,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  params: { lang } 
 }: {
   children: React.ReactNode;
+  params: { lang: string };
 }) {
   return (
-    <html lang="en">
-      <body className={spaceMono.className}>{children}</body>
+    <html lang={lang}> 
+      <body className={spaceMono.className}>
+        {children}
+      </body>
     </html>
   );
 }

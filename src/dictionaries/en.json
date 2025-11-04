@@ -1,0 +1,19 @@
+{
+  "homepage": {
+    "projects": "projects",
+    "contact": "contact",
+    "instagram": "instagram",
+    "about_title": "about me",
+    "about_text": "I'm a multi-disciplinary photographer, meaning I thrive on creative challenges and shoot a bit of everything. Whether it's portraits, atmospheric event coverage, or brand work, I bring a fresh, modern eye to every project."
+  },
+  "project_page": {
+    "back_to_projects": "← Back to all projects",
+    "gallery": "Gallery",
+    "project_not_found": "Project not found."
+  },
+  "gallery_page": {
+    "select_photos": "Click the heart icon to select photos.",
+    "gallery_not_found": "Gallery not found.",
+    "invalid_link": "The link is probably invalid."
+  }
+}
