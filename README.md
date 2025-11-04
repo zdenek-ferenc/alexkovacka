@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ALEXKOVACKA
 
-## Getting Started
+Tento projekt je vytvořen pomocí Next.js a Supabase pro backend. Můžete jej snadno nastavit a spustit pomocí několika kroků.
 
-First, run the development server:
+## Předpoklady
+
+Než začnete, ujistěte se, že máte nainstalováno:
+
+- [Node.js](https://nodejs.org/) (doporučená verze: 14.x nebo novější)
+- [npm](https://www.npmjs.com/) (instalováno společně s Node.js)
+
+## Instalace
+
+## 1. Klonujte tento repozitář:
+
+```bash
+git clone https://github.com/uzivatel/vas-projekt.git
+```
+
+```bash
+cd vas-projekt
+```
+
+## 2. Nainstalujte závislosti:
+
+```bash
+npm install
+```
+
+## 3. Konfigurace:
+
+Pro správné fungování aplikace musíte vytvořit soubor .env.local v kořenovém adresáři projektu. Tento soubor bude obsahovat prostředí a anon klíče.
+
+```bash
+touch .env.local
+```
+
+Přidejte následující proměnné do souboru .env.local:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=vaše_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=vaš_anon_key
+NEXT_PUBLIC_SERVICE_KEY=vaš_service_key
+ADMIN_USERNAME=vaše_admin_jméno
+ADMIN_PASSWORD=vaše_admin_heslo
+```
+
+
+## 4. Spuštění aplikace
+
+Po úspěšné instalaci a konfiguraci můžete aplikaci spustit:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Vývoj
+Pokud chcete přispět do vývoje tohoto projektu, doporučujeme použít VSCode nebo jiný editor, který podporuje moderní JavaScript (ES6+) a Next.js.
