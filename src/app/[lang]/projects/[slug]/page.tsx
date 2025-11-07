@@ -10,18 +10,25 @@ type Project = {
   name: string;
   main_image_url: string;
   title_style: string;
+  description_cs: string | null; 
+  description_en: string | null; 
 };
 
-type PageProps = { params: { slug: string, lang: 'cs' | 'en' } };
+
+type PageProps = { 
+  params: Promise<{ slug: string, lang: 'cs' | 'en' }> 
+};
 
 export default async function ProjectPage({ params }: PageProps) {
+  
   const { slug, lang } = await params; 
+  
   const dictionary = await getDictionary(lang); 
   const { project_page } = dictionary;
 
   const { data: project } = await supabase
     .from('projects')
-    .select('id, name, main_image_url, title_style')
+    .select('id, name, main_image_url, title_style, description_cs, description_en') 
     .eq('slug', slug)
     .single() as { data: Project | null };
 
@@ -36,6 +43,8 @@ export default async function ProjectPage({ params }: PageProps) {
     );
   }
 
+  const description = lang === 'cs' ? project.description_cs : project.description_en;
+
   const { data: galleryPhotos } = await supabase
     .from('photos')
     .select('id, image_url')
@@ -47,6 +56,7 @@ export default async function ProjectPage({ params }: PageProps) {
       galleryPhotos={galleryPhotos || []} 
       dictionary={dictionary}
       lang={lang} 
+      description={description || ''} 
     />
   );
 }

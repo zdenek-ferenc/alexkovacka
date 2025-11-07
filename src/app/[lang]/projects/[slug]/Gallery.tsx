@@ -23,7 +23,8 @@ type GalleryProps = {
   project: Project;
   galleryPhotos: Photo[];
   dictionary: Dictionary; 
-  lang: string;         
+  lang: string;
+  description: string; 
 };
 
 const getTitleClasses = (style: string) => {
@@ -40,7 +41,7 @@ const getTitleClasses = (style: string) => {
   }
 };
 
-export default function Gallery({ project, galleryPhotos, dictionary, lang }: GalleryProps) {
+export default function Gallery({ project, galleryPhotos, dictionary, lang, description }: GalleryProps) {
   const [index, setIndex] = useState(-1);
 
   const slides = galleryPhotos.map((photo) => ({
@@ -80,6 +81,14 @@ export default function Gallery({ project, galleryPhotos, dictionary, lang }: Ga
             </motion.h1>
           </div>
         </motion.div>
+      )}
+
+      {description && (
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <p className="text-black text-base md:text-lg whitespace-pre-line">
+            {description}
+          </p>
+        </div>
       )}
 
       {galleryPhotos && galleryPhotos.length > 0 && (

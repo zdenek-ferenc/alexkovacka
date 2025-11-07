@@ -162,3 +162,36 @@ export async function updateProjectTitleStyle(id: number, newStyle: string) {
   
   return { success: true };
 }
+
+export async function updateProjectDescriptions(
+  prevState: unknown, 
+  id: number, 
+  formData: FormData
+) {
+  const supabaseAdmin = createAdminClient();
+
+  const description_cs = formData.get('description_cs') as string;
+  const description_en = formData.get('description_en') as string;
+
+  const { error } = await supabaseAdmin
+    .from('projects')
+    .update({ 
+      description_cs: description_cs || null,
+      description_en: description_en || null 
+    })
+    .eq('id', id);
+
+  if (error) {
+    return { error: `Chyba při ukládání popisu: ${error.message}`, success: false };
+  }
+
+  revalidatePath(`/admin/projects/${id}`);
+  
+  const { data: project } = await supabaseAdmin.from('projects').select('slug').eq('id', id).single();
+  if (project) {
+    revalidatePath(`/projects/${project.slug}`);
+    revalidatePath('/');
+  }
+
+  return { success: true, error: null };
+}

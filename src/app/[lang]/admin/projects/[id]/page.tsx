@@ -4,22 +4,31 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import ImageUploadForm from "@/components/admin/ImageUploadForm";
-import { deleteGalleryImage } from "./actions";
+import { deleteGalleryImage } from "./actions"; 
 import EditableProjectName from "@/components/admin/EditableProjectName";
 import type { Project } from "../../../admin/projects/actions";
 import TitleStyleSelector from "@/components/admin/TitleStyleSelector";
+import DescriptionEditForm from "@/components/admin/DescriptionEditForm";
 
-type PageProps = { params: { id: string } };
+type PageProps = { 
+  params: Promise<{ id: string }>;
+};
 type Photo = { id: number; image_url: string; };
 type TitleStyle = 'white_text' | 'white_on_black' | 'black_text' | 'black_on_white';
 
 export default async function ProjectDetailPage({ params }: PageProps) {
-  const id = params.id;
+  
+  const { id: idString } = await params; 
+  const id = parseInt(idString, 10);     
+
+  if (isNaN(id)) {
+    return <div>Neplatné ID projektu.</div>;
+  }
 
   const { data: project } = await supabase
     .from("projects")
-    .select("*, main_image_url, title_style")
-    .eq("id", id)
+    .select("*, main_image_url, title_style, description_cs, description_en")
+    .eq("id", id) 
     .single();
     
   const { data: galleryPhotos } = await supabase
@@ -40,6 +49,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <EditableProjectName project={project as Project} />
         </header>
         <div className="p-8 space-y-8">
+          
           <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-bold mb-6">Styl titulku na hlavní fotce</h2>
             <TitleStyleSelector 
@@ -49,6 +59,16 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               currentStyle={(project.title_style || 'white_text') as TitleStyle}
             />
           </div>
+
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-lg font-bold mb-4">Popis projektu</h2>
+            <DescriptionEditForm 
+              projectId={project.id}
+              descriptionCs={project.description_cs}
+              descriptionEn={project.description_en}
+            />
+          </div>
+
           <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-bold mb-4">Hlavní fotka</h2>
             {project.main_image_url && (
@@ -63,6 +83,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             )}
             <ImageUploadForm projectId={project.id} isMain={true} />
           </div>
+          
           <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-bold mb-4">Galerie projektu</h2>
             {galleryPhotos && galleryPhotos.length > 0 ? (

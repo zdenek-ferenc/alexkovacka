@@ -10,10 +10,14 @@ export type Project = {
   created_at: string;
   is_published: boolean;
   order_index: number;
+  description_cs: string | null;
+  description_en: string | null;
 };
 
 export async function addProject(prevState: unknown, formData: FormData) {
   const name = formData.get('name') as string;
+  const description_cs = formData.get('description_cs') as string;
+  const description_en = formData.get('description_en') as string;
 
   const slug = name
     .toLowerCase()
@@ -38,7 +42,9 @@ export async function addProject(prevState: unknown, formData: FormData) {
     name, 
     slug,
     is_published: false, 
-    order_index: count ?? 0
+    order_index: count ?? 0,
+    description_cs: description_cs || null,
+    description_en: description_en || null
   }]);
 
   if (error) {

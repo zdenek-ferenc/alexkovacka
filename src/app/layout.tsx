@@ -8,8 +8,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata = {
-  title: "Alex Kováčka - Fotografka",
-  description: "Profesionální fotografka specializující se na portréty, svatby a komerční fotografii.",
+  title: "Alexander Kovačka - Fotograf",
+  description: "Profesionální fotograf specializující se na portréty a komerční fotografii.",
 };
 
 export default function RootLayout({

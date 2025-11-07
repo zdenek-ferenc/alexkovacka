@@ -44,6 +44,18 @@ export default function AddProjectForm() {
         />
         <SubmitButton />
       </div>
+      <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+        <textarea
+          name="description_cs"
+          placeholder="Český popis projektu..."
+          className="flex-grow px-3 py-2 border rounded-md min-h-[100px]"
+        />
+        <textarea
+          name="description_en"
+          placeholder="Anglický popis projektu..."
+          className="flex-grow px-3 py-2 border rounded-md min-h-[100px]"
+        />
+      </div>
       {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
     </form>
   );
