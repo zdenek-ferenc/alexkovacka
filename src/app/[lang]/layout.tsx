@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export type LangLayoutParams = {
   children: React.ReactNode;
-  params: Promise<{ lang: Locale }>;
+  params: Promise<{ lang: string }>; 
 };
 
 
@@ -22,8 +22,10 @@ export async function generateStaticParams() {
 
 
 export default async function RootLayout({ children, params }: LangLayoutParams) {
-  const { lang } = await params; 
-  const dictionary = await getDictionary(lang);
+  const { lang } = await params;
+  const locale = lang as Locale; 
+
+  const dictionary = await getDictionary(locale);
 
   return (
     <DictionaryProvider dictionary={dictionary}>
