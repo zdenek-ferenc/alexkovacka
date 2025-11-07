@@ -104,7 +104,7 @@ export default function HomePage() {
               </div>
             </button>
             <div className={`transition-all pl-4 duration-500 ease-in-out overflow-hidden ${isAboutOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
-              <p className="text-sm max-w-prose">
+              <p className="text-base max-w-prose">
                 {homepage.about_text}
               </p>
             </div>

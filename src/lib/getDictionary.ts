@@ -1,6 +1,6 @@
 import 'server-only';
 
-type Locale = 'cs' | 'en';
+export type Locale = 'cs' | 'en';
 
 const dictionaries = {
   cs: () => import('@/dictionaries/cs.json').then((module) => module.default),
