@@ -15,7 +15,7 @@ type Project = {
 type PageProps = { params: { slug: string, lang: 'cs' | 'en' } };
 
 export default async function ProjectPage({ params }: PageProps) {
-  const { slug, lang } = params; 
+  const { slug, lang } = await params; 
   const dictionary = await getDictionary(lang); 
   const { project_page } = dictionary;
 

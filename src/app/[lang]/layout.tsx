@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 export type LangLayoutParams = {
   children: ReactNode;
-  params: { 
+  params: Promise<{ 
     lang: Locale;
-  };
+  }>;
 };
 
 export async function generateStaticParams() {
