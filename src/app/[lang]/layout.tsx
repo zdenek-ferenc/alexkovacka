@@ -6,25 +6,23 @@ import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Alex Kováčová - Fotografka",
-  description: "Profesionální fotografka specializující se na portréty, svatby a komerční fotografii.",
+  description:
+    "Profesionální fotografka specializující se na portréty, svatby a komerční fotografii.",
 };
 
 export type LangLayoutParams = {
-  children: ReactNode;
-  params: Promise<{ 
-    lang: Locale;
-  }>;
+  children: React.ReactNode;
+  params: Promise<{ lang: Locale }>;
 };
 
+
 export async function generateStaticParams() {
-  return [{ lang: 'cs' }, { lang: 'en' }];
+  return [{ lang: "cs" }, { lang: "en" }];
 }
 
 
 export default async function RootLayout({ children, params }: LangLayoutParams) {
-
   const { lang } = await params; 
-  
   const dictionary = await getDictionary(lang);
 
   return (
