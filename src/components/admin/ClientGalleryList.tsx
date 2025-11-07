@@ -10,9 +10,6 @@ type Props = {
 
 export default function ClientGalleryList({ initialGalleries }: Props) {
   const [galleries, setGalleries] = useState(initialGalleries);
-
-  // Tento useEffect synchronizuje stav, pokud se změní props
-  // (např. po přidání nové galerie a router.refresh())
   useEffect(() => {
     setGalleries(initialGalleries);
   }, [initialGalleries]);
@@ -46,13 +43,9 @@ export default function ClientGalleryList({ initialGalleries }: Props) {
                 </a>
               </td>
               <td className="p-4 text-right">
-                {/* Tento formulář je nyní v klientské komponentě */}
                 <form action={async () => {
-                  // Tento `confirm()` se spustí na klientovi
                   if (confirm(`Opravdu smazat galerii "${gallery.name}"? Tím smažete i VŠECHNY fotky v ní.`)) {
-                    // Optimistický update: okamžitě odebereme řádek
                     setGalleries(gals => gals.filter(g => g.id !== gallery.id));
-                    // Zavoláme serverovou akci
                     await deleteClientGallery(gallery.id);
                   }
                 }}>

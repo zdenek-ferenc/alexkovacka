@@ -24,24 +24,19 @@ export default function LightroomExportButton({ galleryId, galleryHash }: Props)
       }
 
       if (result.success && result.filenames) {
-        // 1. Vytvoříme textový obsah
-        // Odstraníme přípony (Lightroom porovnává jen názvy)
         const textContent = result.filenames
           .map(name => name.split('.').slice(0, -1).join('.')) 
           .join('\n');
         
-        // 2. Vytvoříme soubor
         const blob = new Blob([textContent], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         
-        // 3. Simulujeme kliknutí pro stažení
         const a = document.createElement('a');
         a.href = url;
         a.download = 'lightroom_vyber.txt';
         document.body.appendChild(a);
         a.click();
         
-        // 4. Uklidíme
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }

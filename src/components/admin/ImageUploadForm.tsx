@@ -123,12 +123,16 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
       setStatus({ type: 'success', message: 'Všechny fotky úspěšně nahrány!' });
       setTotalFiles(0);
 
-    } catch (error: any) {
-      setStatus({ type: 'error', message: error.message });
-      setTotalFiles(0);
-      setUploadProgress(0);
-    } finally {
-        if(fileInputRef.current) fileInputRef.current.value = "";
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+          setStatus({ type: 'error', message: error.message });
+        } else {
+          setStatus({ type: 'error', message: 'Došlo k neznámé chybě' });
+        }
+        setTotalFiles(0);
+        setUploadProgress(0);
+      } finally {
+        if (fileInputRef.current) fileInputRef.current.value = "";
         setTimeout(() => {
             if (status.type === 'success' || status.type === 'error') {
                 setStatus({ type: 'idle', message: '' });

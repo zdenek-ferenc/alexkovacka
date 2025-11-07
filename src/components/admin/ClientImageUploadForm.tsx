@@ -11,7 +11,6 @@ type Props = {
   galleryId: number;
 };
 
-// Vrací objekt s komprimovaným souborem A původním názvem
 async function compressImage(file: File) {
   const options = {
     maxSizeMB: 2,
@@ -104,8 +103,6 @@ export default function ClientImageUploadForm({ galleryId }: Props) {
       );
       
       setStatus({ type: 'saving', message: 'Ukládám fotky do databáze...' });
-
-      // Připravíme data pro uložení (včetně originalName)
       const photosToSave = uploadData.map(d => ({
         path: d.path,
         originalName: d.originalName
@@ -117,18 +114,22 @@ export default function ClientImageUploadForm({ galleryId }: Props) {
       setStatus({ type: 'success', message: 'Všechny fotky úspěšně nahrány!' });
       setTotalFiles(0);
 
-    } catch (error: any) {
-      setStatus({ type: 'error', message: error.message });
-      setTotalFiles(0);
-      setUploadProgress(0);
-    } finally {
-        if(fileInputRef.current) fileInputRef.current.value = "";
-        setTimeout(() => {
-            if (status.type === 'success' || status.type === 'error') {
-                setStatus({ type: 'idle', message: '' });
-            }
-        }, 3000);
-    }
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+          setStatus({ type: 'error', message: error.message });
+        } else {
+          setStatus({ type: 'error', message: 'Došlo k neznámé chybě' });
+        }
+        setTotalFiles(0);
+        setUploadProgress(0);
+        } finally {
+          if(fileInputRef.current) fileInputRef.current.value = "";
+          setTimeout(() => {
+              if (status.type === 'success' || status.type === 'error') {
+                  setStatus({ type: 'idle', message: '' });
+              }
+          }, 3000);
+      }
   };
   
   const progressPercentage = totalFiles > 0 ? (uploadProgress / totalFiles) * 100 : 0;

@@ -24,7 +24,7 @@ function StatCard({ title, value, icon: Icon }: { title: string, value: number |
   );
 }
 
-async function getCount(tableName: string, filter?: { column: string, value: any }) {
+async function getCount(tableName: string, filter?: { column: string, value: unknown }) {
   let query = supabase.from(tableName).select('*', { count: 'exact', head: true });
   if (filter) {
     query = query.eq(filter.column, filter.value);

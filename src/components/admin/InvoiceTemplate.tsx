@@ -16,7 +16,6 @@ type InvoiceProps = {
   qrCodeDataUrl: string | null;
 };
 
-// --- ZMĚNA VE STYLECH ---
 const styles = StyleSheet.create({
   page: {
     fontFamily: 'Roboto',
@@ -74,14 +73,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 1.4,
   },
-  // Odebrali jsme `flexDirection` atd.
   paymentSection: {
-    // Tady už není nic potřeba
   },
   qrCode: {
     width: 90, 
     height: 90,
-    marginTop: 10, // Odsadíme ho od textu nad ním
+    marginTop: 10, 
   },
   table: {
     width: '100%',
@@ -138,7 +135,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
 });
-// --- KONEC ZMĚN STYLŮ ---
 
 const logoUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ''}/logo.png`;
 
@@ -151,9 +147,9 @@ export const InvoiceTemplate = ({
   <Document>
     <Page size="A4" style={styles.page}>
       
-      {/* 1. Hlavička (beze změny) */}
       <View style={styles.header}>
         <View>
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <Image style={styles.logo} src={logoUrl} />
         </View>
         <View style={styles.headerRight}>
@@ -164,7 +160,6 @@ export const InvoiceTemplate = ({
         </View>
       </View>
 
-      {/* 2. Sloupce adres */}
       <View style={styles.columnContainer}>
         <View style={styles.columnLeft}>
           <View style={styles.section}>
@@ -176,10 +171,8 @@ export const InvoiceTemplate = ({
             <Text style={styles.address}>{process.env.NEXT_PUBLIC_INVOICE_NOT_VAT_PAYER}</Text>
           </View>
           
-          {/* 3. ZMĚNA SEKCE PLATEBNÍCH ÚDAJŮ */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Platební údaje</Text>
-            {/* Kontejner `paymentSection` je nyní jen obal */}
             <View style={styles.paymentSection}>
               {/* Texty */}
               <View>
@@ -187,9 +180,9 @@ export const InvoiceTemplate = ({
                 <Text style={styles.address}>IBAN: {process.env.NEXT_PUBLIC_INVOICE_IBAN}</Text>
                 <Text style={styles.address}>SWIFT/BIC: {process.env.NEXT_PUBLIC_INVOICE_SWIFT}</Text>
               </View>
-              {/* QR Kód je *pod* texty, ne vedle nich */}
               {qrCodeDataUrl && (
                 <View>
+                  {/* eslint-disable-next-line jsx-a11y/alt-text */}
                   <Image style={styles.qrCode} src={qrCodeDataUrl} />
                 </View>
               )}
@@ -197,7 +190,6 @@ export const InvoiceTemplate = ({
           </View>
         </View>
 
-        {/* Pravý sloupec (beze změny) */}
         <View style={styles.columnRight}>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Odběratel</Text>
@@ -209,7 +201,6 @@ export const InvoiceTemplate = ({
         </View>
       </View>
 
-      {/* 4. Položky faktury (beze změny) */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Fakturujeme Vám</Text>
         <View style={styles.table}>
@@ -226,13 +217,11 @@ export const InvoiceTemplate = ({
         </View>
       </View>
 
-      {/* 5. Celková částka (beze změny) */}
       <View style={styles.totalSection}>
         <Text style={styles.totalLabel}>Celkem k úhradě:</Text>
         <Text style={styles.totalValue}>{itemPrice} Kč</Text>
       </View>
 
-      {/* 6. Patička (beze změny) */}
       <View style={styles.footer}>
         <Text>{process.env.NEXT_PUBLIC_INVOICE_REGISTER}</Text>
         <Text>Děkuji za spolupráci.</Text>

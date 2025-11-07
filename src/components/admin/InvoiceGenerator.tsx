@@ -6,7 +6,6 @@ import { InvoiceTemplate } from './InvoiceTemplate';
 import { FileDown, Loader2 } from 'lucide-react';
 import QRCode from 'qrcode';
 
-// Registrace fontů (zůstává)
 Font.register({ 
   family: 'Roboto', 
   src: '/fonts/Roboto-Regular.ttf' 
@@ -24,7 +23,6 @@ type Props = {
 export default function InvoiceGenerator({ clientNameDefault, invoiceNumberDefault }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   
-  // Stavy pro formulář (zůstávají)
   const [clientName, setClientName] = useState(clientNameDefault);
   const [clientAddress1, setClientAddress1] = useState('');
   const [clientAddress2, setClientAddress2] = useState('');
@@ -35,22 +33,14 @@ export default function InvoiceGenerator({ clientNameDefault, invoiceNumberDefau
   const [issueDate, setIssueDate] = useState(new Date().toISOString().split('T')[0]);
   const [dueDate, setDueDate] = useState(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
 
-  // Stav pro QR kód (zůstává)
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
 
   const canGenerate = clientName && clientAddress1 && clientAddress2 && itemDescription && parseFloat(itemPrice) > 0 && invoiceNumber;
 
   useEffect(() => {
     if (canGenerate && isOpen) {
-      // Variabilní symbol (číslo faktury bez pomlček)
       const vs = invoiceNumber.replace(/\D/g, '');
-      
-      // --- ZMĚNA ZDE ---
-      // Načteme IBAN a ODSTRANÍME z něj všechny mezery
       const iban = (process.env.NEXT_PUBLIC_INVOICE_IBAN || '').replace(/\s/g, '');
-      // --- KONEC ZMĚNY ---
-      
-      // Vytvoření standardního SPD řetězce (nyní s IBAN bez mezer)
       const spdString = `SPD*1.0*ACC:${iban}*AM:${itemPrice}*CC:CZK*VS:${vs}`;
 
       QRCode.toDataURL(spdString, { errorCorrectionLevel: 'M', width: 150 })
@@ -83,7 +73,6 @@ export default function InvoiceGenerator({ clientNameDefault, invoiceNumberDefau
 
   return (
     <>
-      {/* Tlačítko pro otevření modálu (beze změny) */}
       <button
         onClick={() => setIsOpen(true)}
         className="px-4 py-2 text-sm font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all ease-in-out duration-200 cursor-pointer"
@@ -91,7 +80,6 @@ export default function InvoiceGenerator({ clientNameDefault, invoiceNumberDefau
         Vystavit fakturu
       </button>
 
-      {/* Modální okno (beze změny) */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center"
@@ -101,10 +89,8 @@ export default function InvoiceGenerator({ clientNameDefault, invoiceNumberDefau
             className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-2xl z-50"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Formulář (beze změny) */}
             <h2 className="text-2xl font-bold mb-6">Vystavit fakturu</h2>
             <div className="grid grid-cols-2 gap-6">
-              {/* Info o klientovi */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Odběratel (Klient)</h3>
                 <div>
@@ -124,7 +110,6 @@ export default function InvoiceGenerator({ clientNameDefault, invoiceNumberDefau
                   <input type="text" value={clientIco} onChange={(e) => setClientIco(e.target.value)} className="w-full p-2 border rounded-md" />
                 </div>
               </div>
-              {/* Info o faktuře */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Položky</h3>
                 <div>
@@ -149,8 +134,6 @@ export default function InvoiceGenerator({ clientNameDefault, invoiceNumberDefau
                 </div>
               </div>
             </div>
-
-            {/* Tlačítka (beze změny) */}
             <div className="flex justify-end gap-4 mt-8 pt-6 border-t">
               <button 
                 type="button" 

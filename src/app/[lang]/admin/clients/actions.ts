@@ -1,6 +1,5 @@
 'use server';
 
-import { supabase } from "@/lib/supabaseClient";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { randomBytes } from 'crypto';
@@ -20,22 +19,21 @@ function createAdminClient() {
   );
 }
 
-// Pomocná funkce pro extrakci čistého názvu souboru (přesunuto sem)
 function getCleanFilename(url: string): string {
   try {
     const path = new URL(url).pathname;
     const filenameWithTimestamp = decodeURIComponent(path.split('/').pop() || '');
     const match = filenameWithTimestamp.match(/^\d{13,}-(.*)/);
     if (match && match[1]) {
-      return match[1]; // Vrátí "foto-001.webp"
+      return match[1]; 
     }
     return filenameWithTimestamp;
-  } catch (e) {
+  } catch {
     return "Neznámý soubor";
   }
 }
 
-export async function addClientGallery(prevState: any, formData: FormData) {
+export async function addClientGallery(prevState: unknown, formData: FormData) {
   const name = formData.get('name') as string;
   if (!name) {
     return { error: "Název galerie je povinný.", success: false };
@@ -53,7 +51,6 @@ export async function addClientGallery(prevState: any, formData: FormData) {
 }
 
 export async function deleteClientGallery(id: number) {
-  // Zde bude v budoucnu potřeba doplnit mazání fotek z úložiště
   const supabaseAdmin = createAdminClient();
   const { error } = await supabaseAdmin
     .from('client_galleries')
@@ -88,7 +85,6 @@ export async function createClientUploadUrl(galleryId: string, fileName: string)
   return { success: { path: filePath, signedUrl: data.signedUrl } };
 }
 
-// Upravená funkce pro ukládání (ukládá i original_filename)
 export async function saveClientImageUrls(galleryId: string, photos: { path: string, originalName: string }[]) {
   const supabaseAdmin = createAdminClient();
 
@@ -100,7 +96,7 @@ export async function saveClientImageUrls(galleryId: string, photos: { path: str
     return {
       gallery_id: galleryId,
       image_url: publicUrl,
-      original_filename: photo.originalName // Uložíme původní název
+      original_filename: photo.originalName 
     };
   });
 
@@ -142,11 +138,9 @@ export async function deleteClientGalleryImage(galleryId: number, imageUrl: stri
 }
 
 
-// --- ZDE JE HLAVNÍ OPRAVA ---
 export async function getSelectedFilenames(galleryId: number, galleryHash: string) {
   const supabaseAdmin = createAdminClient();
 
-  // 1. Najdeme všechny vybrané fotky
   const { data: selections, error: selectionError } = await supabaseAdmin
     .from('client_selections')
     .select('photo_id')
@@ -161,30 +155,26 @@ export async function getSelectedFilenames(galleryId: number, galleryHash: strin
 
   const photoIds = selections.map(s => s.photo_id);
 
-  // 2. Získáme originální názvy A URL (jako zálohu)
   const { data: photos, error: photosError } = await supabaseAdmin
     .from('client_photos')
-    .select('original_filename, image_url') // Načteme obojí
+    .select('original_filename, image_url')
     .in('id', photoIds);
 
   if (photosError) {
     return { error: `Chyba při načítání názvů fotek: ${photosError.message}` };
   }
 
-  // 3. Vrátíme pole názvů
   const filenames = photos
     .map(p => {
-      // Priorita 1: Originální název (pokud existuje)
       if (p.original_filename) {
         return p.original_filename;
       }
-      // Priorita 2: Vyčištěný název z URL (pro staré fotky)
       if (p.image_url) {
         return getCleanFilename(p.image_url);
       }
       return null;
     })
-    .filter(Boolean) as string[]; // Odfiltrujeme případné chyby
+    .filter(Boolean) as string[];
 
   return { success: true, filenames };
 }

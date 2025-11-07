@@ -15,9 +15,7 @@ type Project = {
 export default function HomePage() {
   const dictionary = useDictionary();
   
-  // Přejmenovali jsme původní stav
   const [isProjectsOpen, setIsProjectsOpen] = useState(false);
-  // Přidali jsme nový stav pro "About Me"
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   
   const [projects, setProjects] = useState<Project[]>([]);
@@ -43,7 +41,6 @@ export default function HomePage() {
 
   return (
     <main className="relative h-screen">
-      {/* Background obrázky (beze změny) */}
       <Image
         src="/landingbg-mobile.jpg" 
         alt="Hlavní fotka na pozadí pro mobil"
@@ -62,7 +59,6 @@ export default function HomePage() {
       
       <div className="relative z-10 flex h-full flex-col justify-between p-8 text-black">
         <div>
-          {/* Logo (beze změny) */}
           <Image
             src="/logo.svg" 
             alt="logoalexander"
@@ -72,7 +68,6 @@ export default function HomePage() {
             className="block z-[10]" 
           />
           
-          {/* Sekce Projekty (používá `isProjectsOpen`) */}
           <div className="mt-16">
             <button
               onClick={() => setIsProjectsOpen(!isProjectsOpen)}
@@ -97,7 +92,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* --- NOVÁ SEKCE "O MNĚ" --- */}
           <div className="mt-4">
             <button
               onClick={() => setIsAboutOpen(!isAboutOpen)}
@@ -110,17 +104,14 @@ export default function HomePage() {
               </div>
             </button>
             <div className={`transition-all pl-4 duration-500 ease-in-out overflow-hidden ${isAboutOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
-              {/* `max-w-prose` zajistí, že text nebude příliš široký */}
               <p className="text-sm max-w-prose">
                 {homepage.about_text}
               </p>
             </div>
           </div>
-          {/* --- KONEC NOVÉ SEKCE --- */}
           
         </div>
         <div>
-          {/* Kontakty (beze změny) */}
           <h2 className="text-lg font-bold">{homepage.contact}</h2>
           <h2 className="text-lg font-bold mt-2">{homepage.instagram}</h2>
         </div>

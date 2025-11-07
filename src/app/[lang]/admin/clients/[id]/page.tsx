@@ -1,7 +1,7 @@
 import Sidebar from "@/components/admin/Sidebar";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
-import { ArrowLeft, Heart } from "lucide-react"; 
+import { ArrowLeft } from "lucide-react"; 
 import ClientImageUploadForm from "@/components/admin/ClientImageUploadForm";
 import ShareLinkInput from "@/components/admin/ShareLinkInput";
 import InvoiceGenerator from "@/components/admin/InvoiceGenerator";

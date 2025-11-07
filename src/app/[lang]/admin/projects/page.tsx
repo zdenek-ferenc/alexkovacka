@@ -1,4 +1,3 @@
-// src/app/admin/projects/page.tsx
 import Sidebar from "@/components/admin/Sidebar";
 import { supabase } from "@/lib/supabaseClient";
 import AddProjectForm from "@/components/admin/AddProjectForm";

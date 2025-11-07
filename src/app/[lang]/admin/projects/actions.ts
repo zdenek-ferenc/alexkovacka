@@ -12,7 +12,7 @@ export type Project = {
   order_index: number;
 };
 
-export async function addProject(prevState: any, formData: FormData) {
+export async function addProject(prevState: unknown, formData: FormData) {
   const name = formData.get('name') as string;
 
   const slug = name
@@ -87,7 +87,7 @@ export async function updateProjectOrder(projects: Project[]) {
   
   const results = await Promise.all(updates);
 
-  const firstError = results.find((r: any) => r && r.error);
+  const firstError = results.find((r: { error?: unknown }) => r && r.error);
   if (firstError && firstError.error) {
     return { error: `Chyba při ukládání pořadí: ${firstError.error.message}` };
   }

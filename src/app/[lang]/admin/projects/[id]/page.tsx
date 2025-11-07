@@ -1,6 +1,7 @@
 import Sidebar from "@/components/admin/Sidebar";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import ImageUploadForm from "@/components/admin/ImageUploadForm";
 import { deleteGalleryImage } from "./actions";
@@ -51,8 +52,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-bold mb-4">Hlavní fotka</h2>
             {project.main_image_url && (
-              <div className="mb-4">
-                <img src={project.main_image_url} alt="Hlavní fotka" className="h-40 object-cover" />
+              <div className="relative mb-4 h-40"> 
+                <Image 
+                  src={project.main_image_url} 
+                  alt="Hlavní fotka" 
+                  fill 
+                  className="object-cover" 
+                />
               </div>
             )}
             <ImageUploadForm projectId={project.id} isMain={true} />
@@ -62,8 +68,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             {galleryPhotos && galleryPhotos.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
                 {(galleryPhotos as Photo[]).map((photo) => (
-                  <div key={photo.id} className="relative group">
-                    <img src={photo.image_url} alt={`Galerie fotka`} className="w-full h-32 object-cover" />
+                  <div key={photo.id} className="relative group h-32">
+                    <Image 
+                      src={photo.image_url} 
+                      alt={`Galerie fotka`} 
+                      fill
+                      className="object-cover" 
+                    />
                     <form action={async () => {
                       'use server';
                       if (project.id && photo.image_url) {

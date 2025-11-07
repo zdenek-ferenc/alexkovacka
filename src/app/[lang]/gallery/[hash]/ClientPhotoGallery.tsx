@@ -1,18 +1,15 @@
 'use client';
 
-// 1. Importujeme `useMemo` a `createContext`, `useContext`
-import { useState, useTransition, useMemo, createContext, useContext } from 'react';
+import { useState, useTransition, useMemo, createContext, useContext, useEffect } from 'react';
 import Image from 'next/image';
 import { Heart, MessageSquare } from 'lucide-react'; 
 import { selectClientPhoto, deselectClientPhoto, saveClientComment } from '../actions'; 
 
-// 2. Importujeme `Captions` a jeho CSS
 import Lightbox, { Slide } from "yet-another-react-lightbox";
 import Captions from "yet-another-react-lightbox/plugins/captions";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
 
-// --- TYPY ---
 type Photo = { id: number; image_url: string; };
 type Selection = { photo_id: number; comment: string | null; };
 type Props = {
@@ -21,16 +18,13 @@ type Props = {
   photos: Photo[];
   initialSelections: Selection[];
 };
-// 3. Typ pro slide, který bude obsahovat naši React komponentu
+
 type CustomSlide = Slide & { 
   photoId: number;
-  description: React.ReactNode; // Popisek bude React komponenta
+  description: React.ReactNode; 
 };
-// --- KONEC TYPŮ ---
 
 
-// 4. Vytvoříme Context pro sdílení stavu
-// Musíme definovat typ pro náš kontext
 type GalleryContextType = {
   selectedIds: Set<number>;
   comments: Map<number, string>;
@@ -41,15 +35,22 @@ type GalleryContextType = {
   handleCancelInline: () => void;
   handleSaveFromInline: (photoId: number, text: string) => void;
 };
-// Vytvoříme kontext s `null` jako výchozí hodnotou
+
 const GalleryContext = createContext<GalleryContextType | null>(null);
 
-// 5. Vytvoříme komponentu pro tlačítka (Footer)
-// Tato komponenta si vezme stav z kontextu
 function LightboxFooter({ photoId }: { photoId: number }) {
-  // 6. Použijeme hook `useContext`
   const context = useContext(GalleryContext);
-  if (!context) return null; // Pojistka
+  const [inlineInput, setInlineInput] = useState("");
+
+  useEffect(() => {
+    if (context) {
+      setInlineInput(context.comments.get(photoId) || "");
+    } else {
+      setInlineInput("");
+    }
+  }, [photoId, context, context?.comments]);
+
+  if (!context) return null;
 
   const {
     selectedIds,
@@ -61,9 +62,6 @@ function LightboxFooter({ photoId }: { photoId: number }) {
     handleCancelInline,
     handleSaveFromInline
   } = context;
-  
-  // Lokální stav jen pro tento input
-  const [inlineInput, setInlineInput] = useState(comments.get(photoId) || "");
 
   const isSelected = selectedIds.has(photoId);
   const hasComment = comments.has(photoId);
@@ -76,21 +74,21 @@ function LightboxFooter({ photoId }: { photoId: number }) {
           <textarea
             value={inlineInput}
             onChange={(e) => setInlineInput(e.target.value)}
-            className="w-full p-2 border rounded-md text-black bg-white/90" 
+            className="w-full p-2 border rounded-md text-black bg-white/90"
             rows={2}
             placeholder="Napište komentář..."
             autoFocus
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           />
           <div className="flex gap-4">
-            <button 
-              onClick={handleCancelInline} 
+            <button
+              onClick={handleCancelInline}
               className="text-white text-sm opacity-80 hover:opacity-100"
             >
               Zrušit
             </button>
-            <button 
-              onClick={() => handleSaveFromInline(photoId, inlineInput)} 
+            <button
+              onClick={() => handleSaveFromInline(photoId, inlineInput)}
               className="text-white font-bold text-sm hover:opacity-100"
               disabled={isPending}
             >
@@ -105,9 +103,9 @@ function LightboxFooter({ photoId }: { photoId: number }) {
             disabled={isPending}
             className="p-3 bg-white/30 rounded-full text-white transition-all hover:bg-white/50 disabled:opacity-50"
           >
-            <Heart 
-              size={24} 
-              fill={isSelected ? 'currentColor' : 'none'} 
+            <Heart
+              size={24}
+              fill={isSelected ? 'currentColor' : 'none'}
               className={isSelected ? 'text-red-500' : 'text-white'}
             />
           </button>
@@ -129,7 +127,7 @@ function LightboxFooter({ photoId }: { photoId: number }) {
 }
 
 
-// --- HLAVNÍ KOMPONENTA ---
+
 export default function ClientPhotoGallery({ galleryName, shareHash, photos, initialSelections }: Props) {
   const [index, setIndex] = useState(-1); 
   
@@ -142,12 +140,9 @@ export default function ClientPhotoGallery({ galleryName, shareHash, photos, ini
 
   const [isCommenting, setIsCommenting] = useState<Photo | null>(null);
   const [commentText, setCommentText] = useState("");
-
   const [inlineCommentingPhotoId, setInlineCommentingPhotoId] = useState<number | null>(null);
-
   const [isPending, startTransition] = useTransition();
-
-  // --- Handlery ---
+  
   const handleToggleFavorite = (photoId: number) => {
     const newSelectedIds = new Set(selectedIds);
     let action: () => Promise<void | { error: string } | undefined>;
@@ -188,7 +183,7 @@ export default function ClientPhotoGallery({ galleryName, shareHash, photos, ini
     setCommentText("");
   };
 
-  // Upravené inline handlery
+  
   const handleOpenInlineComment = (photoId: number) => {
     setInlineCommentingPhotoId(photoId);
   };
@@ -199,18 +194,15 @@ export default function ClientPhotoGallery({ galleryName, shareHash, photos, ini
   const handleCancelInline = () => {
     setInlineCommentingPhotoId(null);
   };
-
-  // 7. `slides` pole je memoizované. Vytvoří se JEN JEDNOU.
-  //    Do `description` vložíme naši novou komponentu.
+  
   const slides: CustomSlide[] = useMemo(() => photos.map((photo) => ({
     src: photo.image_url,
     width: 1920,
     height: 1080,
     photoId: photo.id,
     description: <LightboxFooter photoId={photo.id} />
-  })), [photos]); // Závislost je jen `photos`, které se nemění
+  })), [photos]); 
 
-  // 8. Vytvoříme hodnotu pro Context provider
   const contextValue = {
     selectedIds,
     comments,
@@ -223,18 +215,14 @@ export default function ClientPhotoGallery({ galleryName, shareHash, photos, ini
   };
 
   return (
-    // 9. Obalíme vše do Provideru
     <GalleryContext.Provider value={contextValue}>
       <div className="bg-white">
-        {/* Hlavička (beze změny) */}
         <div className="text-center py-12 px-4">
           <h1 className="text-4xl font-bold text-black mb-2">{galleryName}</h1>
           <p className="text-gray-600">
             Pro výběr fotek klikněte na ikonu srdce.
           </p>
         </div>
-
-        {/* Mřížka galerie (beze změny) */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="columns-1 sm:columns-2 md:columns-3 gap-4">
             {photos.map((photo, i) => {
@@ -280,25 +268,19 @@ export default function ClientPhotoGallery({ galleryName, shareHash, photos, ini
             })}
           </div>
         </div>
-        
-        {/* Lightbox */}
         <Lightbox
           open={index >= 0}
           close={() => {
             setIndex(-1);
             handleCancelInline();
           }}
-          slides={slides} // <-- Toto pole je teď stabilní
+          slides={slides} 
           index={index}
-          
-          // 10. Použijeme plugin Captions
           plugins={[Captions]}
           captions={{
             showToggle: false,
             descriptionTextAlign: 'center',
           }}
-          
-          // 11. Synchronizujeme náš `index` stav (důležité!)
           on={{
             view: ({ index: currentIndex }) => {
               setIndex(currentIndex);
@@ -306,8 +288,6 @@ export default function ClientPhotoGallery({ galleryName, shareHash, photos, ini
             },
           }}
         />
-
-        {/* EXTERNÍ Modální okno pro komentář (beze změny) */}
         {isCommenting && (
           <div 
             className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
@@ -319,7 +299,15 @@ export default function ClientPhotoGallery({ galleryName, shareHash, photos, ini
             >
               <div className="p-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Přidat komentář</h3>
-                <img src={isCommenting.image_url} alt="Náhled" className="w-full h-48 object-cover rounded-md mb-4" />
+                <div className="relative w-full h-48 rounded-md mb-4 overflow-hidden">
+                  <Image 
+                    src={isCommenting.image_url} 
+                    alt="Náhled" 
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 512px"
+                  />
+                </div>
                 <textarea
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
