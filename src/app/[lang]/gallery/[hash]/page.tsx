@@ -1,14 +1,12 @@
 import { supabase } from "@/lib/supabaseClient";
 import ClientPhotoGallery from "./ClientPhotoGallery";
 
-type PageProps = { params: { hash: string } };
+type PageProps = { params: Promise<{ hash: string }> };
 type Photo = { id: number; image_url: string };
-
-// 1. Upravíme typ Selection
 type Selection = { 
   photo_id: number;
   comment: string | null;
-  is_liked: boolean; // <-- Přidáno
+  is_liked: boolean; 
 };
 
 async function getGalleryData(hash: string) {
@@ -29,20 +27,21 @@ async function getGalleryData(hash: string) {
       .eq('gallery_id', gallery.id),
     supabase
       .from('client_selections')
-      .select('photo_id, comment, is_liked') // 2. Načteme i `is_liked`
-      .eq('client_id', hash)
+      .select('photo_id, comment, is_liked')
+      .eq('client_id', hash),
   ]);
 
   return {
     galleryName: gallery.name,
     shareHash: hash,
     photos: (photosResult.data as Photo[]) || [],
-    initialSelections: (selectionsResult.data as Selection[]) || [], // 3. Předáme celé pole
+    initialSelections: (selectionsResult.data as Selection[]) || [],
   };
 }
 
 export default async function PublicGalleryPage({ params }: PageProps) {
-  const data = await getGalleryData(params.hash);
+  const { hash } = await params; 
+  const data = await getGalleryData(hash);
 
   if (!data) {
     return (
