@@ -62,7 +62,7 @@ export default async function ClientGalleryDetailPage({ params }: { params: { id
     return (bIsSelected ? 1 : 0) - (aIsSelected ? 1 : 0);
   });
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/gallery/${gallery.share_hash}`;
+  const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://alexanderkovacka.vercel.app'}/gallery/${gallery.share_hash}`;
 
   return (
     <div className="flex h-screen bg-gray-100">
