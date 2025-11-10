@@ -32,7 +32,7 @@ function AdminCommentDisplay({ comment }: { comment: string | undefined }) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full text-xs font-medium text-blue-600 hover:text-blue-800"
+        className="flex items-center justify-between cursor-pointer w-full text-xs font-medium text-blue-600 hover:text-blue-800"
       >
         <span className="flex items-center gap-1">
           <MessageSquare size={14} />
@@ -134,7 +134,7 @@ export default function ClientPhotoGrid({ galleryId, initialPhotos, selectedPhot
                         src={photo.image_url} 
                         alt={`Galerie fotka`} 
                         fill
-                        className={`object-cover ${isSelected ? 'border-2 border-red-500 box-border' : ''}`}
+                        className={`object-cover ${isSelected ? 'border-2 rounded-tr-lg rounded-tl-lg border-red-500 box-border' : ''}`}
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" 
                       />
                   </div>
