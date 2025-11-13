@@ -26,7 +26,7 @@ export default function ClientGalleryList({ initialGalleries }: Props) {
         </thead>
         <tbody>
           {galleries.map((gallery) => (
-            <tr key={gallery.id} className="border-b hover:bg-gray-50">
+            <tr key={gallery.id} className="border-b hover:bg-gray-50 transition-all ease-in-out duration-200">
               <td className="p-4 font-medium">
                 <a href={`/admin/clients/${gallery.id}`} className="block">
                   {gallery.name}
@@ -49,7 +49,7 @@ export default function ClientGalleryList({ initialGalleries }: Props) {
                     await deleteClientGallery(gallery.id);
                   }
                 }}>
-                  <button type="submit" className="text-red-500 hover:text-red-700 p-2 rounded-md cursor-pointer">
+                  <button type="submit" className="text-red-500 hover:text-red-700 hover:bg-red-100 transition-all ease-in-out duration-200 p-2 rounded-full cursor-pointer">
                     <Trash2 size={20} />
                   </button>
                 </form>

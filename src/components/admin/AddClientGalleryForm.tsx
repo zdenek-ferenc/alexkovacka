@@ -11,7 +11,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="px-4 py-2 font-bold text-white cursor-pointer bg-black rounded-md hover:bg-gray-800 disabled:bg-gray-400"
+      className="px-4 py-2 font-bold text-white cursor-pointer bg-black rounded-md hover:bg-black/80 transition-all ease-in-out duration-200 disabled:bg-gray-400"
     >
       {pending ? 'Vytvářím...' : 'Vytvořit'}
     </button>

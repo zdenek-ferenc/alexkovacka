@@ -163,6 +163,27 @@ export async function updateProjectTitleStyle(id: number, newStyle: string) {
   return { success: true };
 }
 
+export type ProjectPhoto = {
+  id: number;
+  image_url: string;
+};
+
+export async function getProjectPhotos(projectId: string | number): Promise<ProjectPhoto[]> {
+  const supabaseAdmin = createAdminClient();
+  const { data, error } = await supabaseAdmin
+    .from('photos')
+    .select('id, image_url')
+    .eq('project_id', projectId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error("Chyba při načítání fotek projektu:", error.message);
+    return [];
+  }
+
+  return data || [];
+}
+
 export async function updateProjectDescriptions(
   prevState: unknown, 
   id: number, 

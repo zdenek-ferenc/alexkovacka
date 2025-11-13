@@ -16,6 +16,8 @@ export type Project = {
   order_index: number;
   description_cs: string | null;
   description_en: string | null;
+  main_image_url: string | null; 
+  title_style: 'white_text' | 'white_on_black' | 'black_text' | 'black_on_white' | null; //
 };
 
 // 3. Přidali jsme funkci pro vytvoření Admin klienta

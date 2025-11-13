@@ -113,11 +113,11 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
       const paths = uploadData.map(d => d.path);
       
       if (isMain) {
-         const saveResult = await saveImageUrl(String(projectId), paths[0], true);
-         if (saveResult.error) throw new Error(saveResult.error);
+        const saveResult = await saveImageUrl(String(projectId), paths[0], true);
+        if (saveResult.error) throw new Error(saveResult.error);
       } else {
-         const saveBatchResult = await saveGalleryImageUrls(String(projectId), paths);
-         if (saveBatchResult.error) throw new Error(saveBatchResult.error);
+        const saveBatchResult = await saveGalleryImageUrls(String(projectId), paths);
+        if (saveBatchResult.error) throw new Error(saveBatchResult.error);
       }
 
       setStatus({ type: 'success', message: 'Všechny fotky úspěšně nahrány!' });
@@ -141,8 +141,7 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
     }
   };
   
-  const progressPercentage = totalFiles > 0 ? (uploadProgress / totalFiles) * 100 : 0;
-  
+  const progressPercentage = totalFiles > 0 ? (uploadProgress / totalFiles) * 100 : 0; 
   const isUploading = status.type === 'compressing' || status.type === 'preparing' || status.type === 'uploading' || status.type === 'saving';
 
   return (
@@ -154,13 +153,13 @@ export default function ImageUploadForm({ projectId, isMultiple = false, isMain 
         accept="image/*"
         multiple={isMultiple}
         disabled={isUploading} 
-        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-black hover:file:bg-gray-200 disabled:opacity-50"
+        className="block w-full text-sm text-gray-500 file:transition-all file:ease-in-out file:duration-200 file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-black hover:file:bg-gray-200 disabled:opacity-50"
         required
       />
       <button
         type="submit"
         disabled={isUploading} 
-        className="px-4 py-2 text-sm font-bold text-white bg-black rounded-md disabled:bg-gray-400"
+        className="px-4 py-2 text-sm cursor-pointer hover:bg-black/80 transition-all ease-in-out duration-200 font-bold text-white bg-black rounded-md disabled:bg-gray-400"
       >
         {isUploading ? 'Nahrávám...' : (isMultiple ? 'Nahrát fotky' : 'Nahrát fotku')}
       </button>
