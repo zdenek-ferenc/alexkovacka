@@ -4,6 +4,8 @@ import AddClientGalleryForm from "@/components/admin/AddClientGalleryForm";
 import { ClientGallery } from "./actions"; 
 import ClientGalleryList from "@/components/admin/ClientGalleryList"; 
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminClientGalleriesPage() {
   
   const { data, error } = await supabase

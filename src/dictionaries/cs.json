@@ -29,5 +29,25 @@
     "email": "Email",
     "message": "Zpráva",
     "submit": "Odeslat"
+  },
+  "admin": {
+    "creatingGallery": "Vytvářím galerii...",
+    "createGallery": "Vytvořit galerii",
+    "galleryName": "Název galerie",
+    "clientName": "Jméno klienta",
+    "clientGalleries": "Klientské galerie",
+    "dashboard": "Nástěnka",
+    "projects": "Projekty",
+    "clients": "Klienti",
+    "logout": "Odhlásit se",
+    "addProject": "Přidat projekt",
+    "projectName": "Název projektu",
+    "creatingProject": "Vytvářím projekt...",
+    "editProject": "Upravit projekt",
+    "deleteProject": "Smazat projekt",
+    "confirmDeleteProject": "Opravdu chcete smazat tento projekt?",
+    "addGallery": "Přidat galerii",
+    "deleteGallery": "Smazat galerii",
+    "confirmDeleteGallery": "Opravdu chcete smazat tuto galerii?"
   }
 }
