@@ -95,24 +95,24 @@ export default function ClientPhotoGrid({ galleryId, initialPhotos, selectedPhot
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            filter === 'all' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          className={`px-4 py-2 rounded-md cursor-pointer text-sm font-medium ${
+            filter === 'all' ? 'bg-black text-white' : 'bg-gray-100 transition-all ease-in-out duration-200 text-gray-700 hover:bg-gray-200'
           }`}
         >
           Zobrazit vše ({initialPhotos.length})
         </button>
         <button
           onClick={() => setFilter('selected')}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            filter === 'selected' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          className={`px-4 py-2 rounded-md cursor-pointer text-sm font-medium ${
+            filter === 'selected' ? 'bg-black text-white' : 'bg-gray-100 transition-all ease-in-out duration-200 text-gray-700 hover:bg-gray-200'
           }`}
         >
           Pouze vybrané ({selectedPhotoIds.size})
         </button>
         <button
           onClick={() => setFilter('comments')}
-          className={`px-4 py-2 rounded-md text-sm font-medium ${
-            filter === 'comments' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          className={`px-4 py-2 rounded-md cursor-pointer text-sm font-medium ${
+            filter === 'comments' ? 'bg-black text-white' : 'bg-gray-100 transition-all ease-in-out duration-200 text-gray-700 hover:bg-gray-200'
           }`}
         >
           S komentářem ({commentsMap.size})
@@ -151,7 +151,7 @@ export default function ClientPhotoGrid({ galleryId, initialPhotos, selectedPhot
                     type="button"
                     onClick={() => handleDelete(photo.id, photo.image_url)}
                     disabled={isPending}
-                    className="absolute top-1 right-1 p-1.5 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50"
+                    className="absolute top-1 right-1 cursor-pointer p-1.5 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50"
                   >
                     <Trash2 size={16} />
                   </button>

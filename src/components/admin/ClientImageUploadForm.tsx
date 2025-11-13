@@ -144,13 +144,13 @@ export default function ClientImageUploadForm({ galleryId }: Props) {
         accept="image/*"
         multiple={true}
         disabled={isUploading} 
-        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-black hover:file:bg-gray-200 disabled:opacity-50"
+        className="block w-full text-sm text-gray-500 cursor-pointer file:tranisiton-all file:ease-in-out file:duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-black hover:file:bg-gray-200 disabled:opacity-50"
         required
       />
       <button
         type="submit"
         disabled={isUploading} 
-        className="px-4 py-2 text-sm font-bold text-white bg-black rounded-md disabled:bg-gray-400"
+        className="px-4 py-2 text-sm font-bold text-white bg-black cursor-pointer hover:bg-black/80 transition-all ease-in-out duration-200 rounded-md disabled:bg-gray-400"
       >
         {isUploading ? 'Nahrávám...' : 'Nahrát fotky'}
       </button>

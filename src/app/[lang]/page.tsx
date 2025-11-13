@@ -44,13 +44,6 @@ export default function HomePage() {
   return (
     <main className="relative h-screen">
       <Image
-        src="/landingbg-mobile.jpg" 
-        alt="Hlavní fotka na pozadí pro mobil"
-        layout="fill"
-        objectFit="cover"
-        className="block md:hidden z-[-1]" 
-      />
-      <Image
         src="/landingbg.jpg" 
         alt="Hlavní fotka na pozadí"
         layout="fill"
