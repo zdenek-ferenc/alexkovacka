@@ -35,7 +35,7 @@ export default async function AdminProjectsPage() {
         <header className="h-16 bg-white border-b flex items-center px-8">
           <h1 className="text-xl font-semibold">Správa projektů</h1>
         </header>
-        <div className="p-8 space-y-8 pb-32">
+        <div className="p-8 space-y-8 pb-42">
           <div className="p-6 bg-white rounded-lg">
             <h2 className="text-lg font-bold mb-4">Přidat nový projekt</h2>
             <AddProjectForm />
