@@ -72,7 +72,7 @@ export default function Gallery({ project, galleryPhotos, dictionary, lang, desc
           />
           <div className="absolute inset-0 bg-black/30 flex items-center justify-center p-4">
             <motion.h1 
-              className={`text-5xl font-bold text-center tracking-wider transition-all ${titleClasses}`}
+              className={`text-5xl font-bold text-center px-6 py-4 tracking-wider leading-none transition-all ${titleClasses}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.2, delay: 0.5, ease: 'easeInOut' }}

@@ -15,5 +15,19 @@
     "select_photos": "Click the heart icon to select photos.",
     "gallery_not_found": "Gallery not found.",
     "invalid_link": "The link is probably invalid."
-  }
+  },
+  "home": {
+      "subtitle": "Photographer",
+      "projects": "Projects",
+      "contact": "Contact"
+    },
+    "projects": {
+      "title": "Projects"
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "submit": "Submit"
+    }
 }

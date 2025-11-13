@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from "@/lib/supabaseClient"; 
 import { useDictionary } from '../contexts/DictionaryContext';
+import ContactModal from '@/components/ContactModal'; 
 
 type Project = {
   id: number;
@@ -17,6 +18,7 @@ export default function HomePage() {
   
   const [isProjectsOpen, setIsProjectsOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const [projects, setProjects] = useState<Project[]>([]);
 
@@ -112,10 +114,28 @@ export default function HomePage() {
           
         </div>
         <div>
-          <h2 className="text-lg font-bold">{homepage.contact}</h2>
-          <h2 className="text-lg font-bold mt-2">{homepage.instagram}</h2>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="text-lg font-bold cursor-pointer hover:underline"
+          >
+            {homepage.contact}
+          </button>
+          
+          <a
+            href="https://www.instagram.com/alexanderkvph/" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-lg font-bold mt-2 block hover:underline"
+          >
+            {homepage.instagram}
+          </a>
         </div>
       </div>
+      <ContactModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        dict={dictionary} 
+      />
     </main>
   );
 }

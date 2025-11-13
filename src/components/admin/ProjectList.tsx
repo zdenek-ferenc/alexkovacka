@@ -7,17 +7,13 @@ import { Project, deleteProject, toggleProjectVisibility, updateProjectOrder } f
 import { useFormStatus } from 'react-dom';
 
 function VisibilityToggle({ project }: { project: Project }) {
-  const [isPublished, setIsPublished] = useState(project.is_published);
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus(); 
+  const isPublished = project.is_published;
 
   return (
     <button
       type="submit"
-      disabled={pending}
-      onClick={async () => {
-        setIsPublished(!isPublished);
-        await toggleProjectVisibility(project.id, project.is_published);
-      }}
+      disabled={pending} 
       className={`p-2 rounded-md ${isPublished ? 'text-green-500 cursor-pointer ease-in-out duration-200 hover:bg-green-100' : 'text-gray-400 cursor-pointer hover:bg-gray-100'} disabled:opacity-50`}
       aria-label={isPublished ? "Skrýt projekt" : "Zveřejnit projekt"}
     >
@@ -88,15 +84,33 @@ export default function ProjectList({ initialProjects }: { initialProjects: Proj
                           </a>
                         </td>
                         <td className="p-4 text-center w-24">
-                          <form> 
-                            <VisibilityToggle project={project} />
-                          </form>
-                        </td>
+                            <form action={toggleProjectVisibility.bind(null, project.id, project.is_published)}> 
+                              <VisibilityToggle project={project} />
+                            </form>
+                            </td>
                         <td className="p-4 text-right w-24">
-                          <form action={async () => {
+                          <form onSubmit={async (e) => {
+                            e.preventDefault(); 
                             if (confirm(`Opravdu smazat projekt "${project.name}"?`)) {
+                              
+                              // 1. Uložíme si původní seznam pro případ, že se to nepovede
+                              const originalProjects = projects;
+                              
+                              // 2. Optimisticky smazat
                               setProjects(projects.filter(p => p.id !== project.id));
-                              await deleteProject(project.id);
+                              
+                              try {
+                                // 3. Počkat na akci serveru
+                                await deleteProject(project.id);
+                                // Pokud úspěšné, akce sama revaliduje a vše je OK
+                                
+                              } catch (error) {
+                                // 4. Pokud server vyhodil chybu (viz Krok 1)
+                                console.error(error);
+                                alert('Projekt se nepodařilo smazat. Obnovuji seznam.');
+                                // Vrátíme seznam do původního stavu
+                                setProjects(originalProjects);
+                              }
                             }
                           }}>
                             <button type="submit" className="text-red-500 cursor-pointer ease-in-out duration-200 hover:text-red-700 p-2 rounded-md">

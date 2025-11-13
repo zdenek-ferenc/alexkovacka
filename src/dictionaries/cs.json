@@ -15,5 +15,19 @@
     "select_photos": "Pro výběr fotek klikněte na ikonu srdce.",
     "gallery_not_found": "Galerie nenalezena.",
     "invalid_link": "Odkaz je pravděpodobně neplatný."
+  },
+  "home": {
+    "subtitle": "Fotografka",
+    "projects": "Projekty",
+    "contact": "Kontakt"
+  },
+  "projects": {
+    "title": "Projekty"
+  },
+  "form": {
+    "name": "Jméno",
+    "email": "Email",
+    "message": "Zpráva",
+    "submit": "Odeslat"
   }
 }

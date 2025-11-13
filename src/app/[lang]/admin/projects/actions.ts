@@ -57,10 +57,15 @@ export async function addProject(prevState: unknown, formData: FormData) {
 }
 
 export async function deleteProject(id: number) {
-  const { error } = await supabase.from('projects').delete().eq('id', id);
-
+  const { error, count } = await supabase
+    .from('projects')
+    .delete({ count: 'exact' }) 
+    .eq('id', id);
   if (error) {
-    return { error: `Chyba při mazání: ${error.message}` };
+    throw new Error(`Chyba při mazání: ${error.message}`);
+  }
+  if (count === 0 || count === null) {
+    throw new Error('Projekt se nepodařilo smazat (pravděpodobně kvůli RLS oprávněním nebo již neexistuje).');
   }
 
   revalidatePath('/admin/projects');
@@ -74,7 +79,7 @@ export async function toggleProjectVisibility(id: number, currentState: boolean)
     .eq('id', id);
 
   if (error) {
-    return { error: `Chyba při změně viditelnosti: ${error.message}` };
+    throw new Error(`Chyba při změně viditelnosti: ${error.message}`);
   }
 
   revalidatePath('/admin/projects');
@@ -95,10 +100,9 @@ export async function updateProjectOrder(projects: Project[]) {
 
   const firstError = results.find((r: { error?: unknown }) => r && r.error);
   if (firstError && firstError.error) {
-    return { error: `Chyba při ukládání pořadí: ${firstError.error.message}` };
+    throw new Error(`Chyba při ukládání pořadí: ${(firstError.error as Error).message}`);
   }
 
   revalidatePath('/admin/projects');
   revalidatePath('/');
-
 }
