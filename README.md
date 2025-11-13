@@ -40,7 +40,7 @@ Přidejte následující proměnné do souboru .env.local:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=vaše_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=vaš_anon_key
-NEXT_PUBLIC_SERVICE_KEY=vaš_service_key
+SUPABASE_SERVICE_KEY=vaš_service_key
 ADMIN_USERNAME=vaše_admin_jméno
 ADMIN_PASSWORD=vaše_admin_heslo
 ```
