@@ -37,7 +37,6 @@ export default function ShareLinkInput({ shareUrl }: Props) {
         {isCopied ? (
           <Check size={18} className="text-green-600" />
         ) : (
-          // Výchozí ikona schránky
           <Clipboard size={18} />
         )}
       </button>
