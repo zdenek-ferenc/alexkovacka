@@ -72,7 +72,7 @@ export default function TitleStyleSelector({ projectId, projectName, mainImageUr
         <button
           onClick={handleSave}
           disabled={isPending || selectedStyle === currentStyle}
-          className="mt-6 px-4 py-2 text-sm font-bold text-white bg-black rounded-md disabled:bg-gray-400 flex items-center gap-2"
+          className="mt-6 px-4 py-2 cursor-pointer text-sm font-bold text-white bg-black rounded-md disabled:bg-gray-400 flex items-center gap-2"
         >
           {isPending ? (
             <Loader2 size={16} className="animate-spin" />

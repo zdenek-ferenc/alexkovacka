@@ -47,6 +47,7 @@ export async function addClientGallery(prevState: unknown, formData: FormData) {
     return { error: `Chyba při ukládání: ${error.message}`, success: false };
   }
   revalidatePath('/admin/clients');
+  revalidatePath('/'); 
   return { success: true, error: null };
 }
 

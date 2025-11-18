@@ -14,7 +14,7 @@ function VisibilityToggle({ project }: { project: Project }) {
     <button
       type="submit"
       disabled={pending} 
-      className={`p-2 rounded-md ${isPublished ? 'text-green-500 cursor-pointer ease-in-out duration-200 hover:bg-green-100' : 'text-gray-400 cursor-pointer hover:bg-gray-100'} disabled:opacity-50`}
+      className={`p-2 rounded-full ${isPublished ? 'text-green-500 cursor-pointer ease-in-out duration-200 hover:bg-green-100' : 'text-gray-400 cursor-pointer hover:bg-gray-100'} disabled:opacity-50`}
       aria-label={isPublished ? "Skrýt projekt" : "Zveřejnit projekt"}
     >
       {isPublished ? <Eye size={20} /> : <EyeOff size={20} />}
@@ -65,7 +65,7 @@ export default function ProjectList({ initialProjects }: { initialProjects: Proj
                       <tr
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className="border-b hover:bg-gray-50"
+                        className="border-b hover:bg-gray-50 transition-all ease-in-out duration-200"
                       >
                         <td 
                           className="p-4 text-gray-400 cursor-grab w-12"
@@ -92,28 +92,19 @@ export default function ProjectList({ initialProjects }: { initialProjects: Proj
                           <form onSubmit={async (e) => {
                             e.preventDefault(); 
                             if (confirm(`Opravdu smazat projekt "${project.name}"?`)) {
-                              
-                              // 1. Uložíme si původní seznam pro případ, že se to nepovede
-                              const originalProjects = projects;
-                              
-                              // 2. Optimisticky smazat
-                              setProjects(projects.filter(p => p.id !== project.id));
-                              
+                              const originalProjects = projects;                              
+                              setProjects(projects.filter(p => p.id !== project.id));                              
                               try {
-                                // 3. Počkat na akci serveru
                                 await deleteProject(project.id);
-                                // Pokud úspěšné, akce sama revaliduje a vše je OK
                                 
                               } catch (error) {
-                                // 4. Pokud server vyhodil chybu (viz Krok 1)
                                 console.error(error);
                                 alert('Projekt se nepodařilo smazat. Obnovuji seznam.');
-                                // Vrátíme seznam do původního stavu
                                 setProjects(originalProjects);
                               }
                             }
                           }}>
-                            <button type="submit" className="text-red-500 cursor-pointer ease-in-out duration-200 hover:text-red-700 p-2 rounded-md">
+                            <button type="submit" className="text-red-500 cursor-pointer ease-in-out duration-200 hover:text-red-700 hover:bg-red-100 p-2 rounded-full">
                               <Trash2 size={20} />
                             </button>
                           </form>

@@ -53,25 +53,30 @@ export default function DescriptionEditForm({ projectId, descriptionCs, descript
   return (
     <form action={formAction} className="space-y-4">
       <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-        <div className="flex-1 space-y-2">
-          <label htmlFor="description_cs" className="font-semibold text-sm">Český popis</label>
-          <textarea
-            id="description_cs"
-            name="description_cs"
-            placeholder="Český popis projektu..."
-            className="w-full px-3 py-2 border rounded-md min-h-[150px]"
-            defaultValue={descriptionCs || ''}
-          />
+        <div className="flex-1 space-y-4">
+          <div className='flex flex-col gap-2'>
+            <label htmlFor="description_cs" className="font-semibold text-sm">Český popis</label>
+            <textarea
+              id="description_cs"
+              name="description_cs"
+              placeholder="Český popis projektu..."
+              className="w-full px-3 py-2 border rounded-md min-h-[150px]"
+              defaultValue={descriptionCs || ''}
+            />
+          </div>
         </div>
-        <div className="flex-1 space-y-2">
-          <label htmlFor="description_en" className="font-semibold text-sm">Anglický popis</label>
-          <textarea
-            id="description_en"
-            name="description_en"
-            placeholder="Anglický popis projektu..."
-            className="w-full px-3 py-2 border rounded-md min-h-[150px]"
-            defaultValue={descriptionEn || ''}
-          />
+        <div className="flex-1 space-y-4">
+          <div className='flex flex-col gap-2'>
+            <label htmlFor="description_en" className="font-semibold text-sm">Anglický popis</label>
+            <textarea
+              id="description_en"
+              name="description_en"
+              placeholder="Anglický popis projektu..."
+              className="w-full px-3 py-2 border rounded-md min-h-[150px]"
+              defaultValue={descriptionEn || ''}
+            />
+          </div>
+          
         </div>
       </div>
       <div className="flex justify-end items-center gap-4">
