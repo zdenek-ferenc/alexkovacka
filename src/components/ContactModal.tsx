@@ -1,6 +1,8 @@
+// zdenek-ferenc/alexkovacka/src/components/ContactModal.tsx
 "use client";
-import React from 'react';
+import React, { useState, useTransition } from 'react';
 import { AppDictionary } from '@/types'; 
+import { sendEmail } from '@/app/actions/sendEmail'; // Import server action
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -9,12 +11,32 @@ interface ContactModalProps {
 }
 
 export default function ContactModal({ isOpen, onClose, dict }: ContactModalProps) {
+  const [isPending, startTransition] = useTransition();
+  const [status, setStatus] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: '' });
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert('Formulář odeslán (simulace).');
-    onClose();
+    setStatus({ type: null, message: '' });
+    
+    // Získáme data z formuláře
+    const formData = new FormData(e.currentTarget);
+
+    startTransition(async () => {
+      const result = await sendEmail(formData);
+
+      if (result.success) {
+        setStatus({ type: 'success', message: 'Zpráva byla úspěšně odeslána!' });
+        // Počkáme chvilku, aby si uživatel přečetl zprávu, a pak zavřeme (volitelné)
+        setTimeout(() => {
+          onClose();
+          setStatus({ type: null, message: '' }); // Reset pro příště
+        }, 2000);
+      } else {
+        setStatus({ type: 'error', message: result.message || 'Něco se pokazilo.' });
+      }
+    });
   };
 
   return (
@@ -34,6 +56,12 @@ export default function ContactModal({ isOpen, onClose, dict }: ContactModalProp
           {dict.home.contact}
         </h2>
 
+        {status.message && (
+          <div className={`mb-4 p-3 rounded text-sm ${status.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            {status.message}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
@@ -42,8 +70,10 @@ export default function ContactModal({ isOpen, onClose, dict }: ContactModalProp
             <input 
               type="text" 
               id="name" 
+              name="name" 
               className="w-full rounded-md border border-gray-300 p-2 text-gray-900 focus:border-black focus:ring-black" 
               required 
+              disabled={isPending}
             />
           </div>
           <div className="mb-4">
@@ -53,8 +83,10 @@ export default function ContactModal({ isOpen, onClose, dict }: ContactModalProp
             <input 
               type="email" 
               id="email" 
+              name="email"
               className="w-full rounded-md border border-gray-300 p-2 text-gray-900 focus:border-black focus:ring-black" 
               required 
+              disabled={isPending}
             />
           </div>
           <div className="mb-4">
@@ -63,16 +95,19 @@ export default function ContactModal({ isOpen, onClose, dict }: ContactModalProp
             </label>
             <textarea 
               id="message" 
+              name="message"
               rows={4} 
               className="w-full rounded-md border border-gray-300 p-2 text-gray-900 focus:border-black focus:ring-black" 
               required 
+              disabled={isPending}
             ></textarea>
           </div>
           <button 
             type="submit" 
-            className="w-full rounded-md bg-black px-4 cursor-pointer py-2 text-white transition-colors duration-200 hover:bg-gray-800"
+            disabled={isPending}
+            className={`w-full rounded-md px-4 py-2 text-white transition-colors duration-200 ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800 cursor-pointer'}`}
           >
-            {dict.form.submit}
+            {isPending ? 'Odesílám...' : dict.form.submit}
           </button>
         </form>
       </div>

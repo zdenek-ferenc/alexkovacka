@@ -60,7 +60,7 @@ export default function HomePage() {
   const { homepage } = dictionary;
 
   return (
-    <main className="relative h-screen">
+    <main className="relative h-[95vh] md:h-screen">
       <Image
         src="/landingbg.jpg"
         alt="Hlavní fotka na pozadí"
