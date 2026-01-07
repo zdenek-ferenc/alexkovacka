@@ -19,12 +19,15 @@ export async function sendEmail(formData: FormData): Promise<SendEmailState> {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: true, // true pro port 465, false pro ostatní porty
+      port: Number(process.env.SMTP_PORT), 
+      secure: false, 
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      connectionTimeout: 10000, 
+      greetingTimeout: 5000,    
+      socketTimeout: 10000,
     });
 
     const mailOptions = {
